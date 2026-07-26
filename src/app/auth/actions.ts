@@ -22,7 +22,47 @@ function formValue(formData: FormData, key: string) {
 
 async function getOrigin() {
   const headerStore = await headers();
-  return headerStore.get("origin") ?? "http://localhost:3000";
+  const configuredOrigin =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.SITE_URL ??
+    process.env.APP_URL;
+  const requestOrigin = headerStore.get("origin");
+  const forwardedHost =
+    headerStore.get("x-forwarded-host") ?? headerStore.get("host");
+  const forwardedProto = headerStore.get("x-forwarded-proto") ?? "https";
+  const vercelUrl =
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+
+  if (configuredOrigin) {
+    return normalizeOrigin(configuredOrigin);
+  }
+
+  if (requestOrigin && !isLocalOrigin(requestOrigin)) {
+    return normalizeOrigin(requestOrigin);
+  }
+
+  if (forwardedHost && !forwardedHost.startsWith("localhost")) {
+    return normalizeOrigin(`${forwardedProto}://${forwardedHost}`);
+  }
+
+  if (vercelUrl) {
+    return normalizeOrigin(`https://${vercelUrl}`);
+  }
+
+  return requestOrigin ?? "http://localhost:3000";
+}
+
+function normalizeOrigin(value: string) {
+  return value.replace(/\/+$/, "");
+}
+
+function isLocalOrigin(value: string) {
+  try {
+    const url = new URL(value);
+    return url.hostname === "localhost" || url.hostname === "127.0.0.1";
+  } catch {
+    return value.startsWith("http://localhost") || value.startsWith("http://127.0.0.1");
+  }
 }
 
 function sanitizeRedirectTo(value: string) {

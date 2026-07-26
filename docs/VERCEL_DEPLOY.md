@@ -17,6 +17,7 @@ Configure em **Project Settings > Environment Variables**.
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SITE_URL` com a URL publica do app, por exemplo `https://SEU-DOMINIO.vercel.app`
 
 ### Preview
 
@@ -24,12 +25,15 @@ Idealmente use um projeto Supabase separado para staging/preview.
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SITE_URL` com a URL do ambiente de preview, ou deixe sem configurar para usar a URL do deployment da Vercel
 
 ### Development
 
 Localmente use `.env.local`.
 
 Nunca coloque `SUPABASE_SERVICE_ROLE_KEY` em variavel `NEXT_PUBLIC_*`.
+
+`NEXT_PUBLIC_SITE_URL` e usada para montar links de confirmacao de e-mail, recuperacao de senha e reenvio de confirmacao. Em producao, ela nunca deve apontar para `localhost`.
 
 ## Configuracao do Projeto na Vercel
 
@@ -111,4 +115,3 @@ Na Vercel:
 - Manter migrations novas versionadas.
 - Nao editar migration ja aplicada; criar sempre uma migration nova.
 - Separar Supabase de preview/staging antes de testes destrutivos.
-
