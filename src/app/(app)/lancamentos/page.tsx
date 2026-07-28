@@ -19,6 +19,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { Toast } from "@/components/ui/toast";
 import { formatCurrency, formatDatePtBr } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import { AiChat } from "@/app/(app)/lancamentos/ai-chat";
 import {
   TransactionForm,
   type SubcategoryOption,
@@ -142,6 +143,8 @@ export default async function LancamentosPage({
         <MetricCard label="Despesas filtradas" value={formatCurrency(filteredDespesas)} tone="danger" />
         <MetricCard label="Saldo filtrado" value={formatCurrency(filteredReceitas - filteredDespesas)} />
       </section>
+
+      <AiChat action={createTransaction} subcategories={subcategories} />
 
       <div className="flex justify-end">
         <ModalPanel
